@@ -12,6 +12,8 @@ const sf::Vector2f cell_size(window_size.x/number_of_cells.x,window_size.y/numbe
 const sf::Vector2f start(0,0);
 bool click_pressed = false;
 
+sf::Vector2i getClickedCell(sf::RenderWindow &window, sf::Vector2i mouse_pos);
+
 int main()
 {
     // Create the main window
@@ -24,7 +26,6 @@ int main()
     {
         for(int j = 0; j < number_of_cells.x;j++)
         {
-            //do something
             cell_grid[i][j] = new Cell(cell_size);
             cell_grid[i][j]->setOutlineColor(sf::Color::Black);
             cell_grid[i][j]->setOutlineThickness(5);
@@ -35,14 +36,15 @@ int main()
     while (window.isOpen())
     {
 
-        //Check when mouse click has been released
+        //Change state when mouse click has been released
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
             click_pressed = true;
         if(click_pressed && !sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
             click_pressed = false;
-            cell_grid[0][0]->changeState();
-            std::cout << sf::Mouse::getPosition(window).x << "," << sf::Mouse::getPosition(window).y << std::endl;
+            //std::cout << sf::Mouse::getPosition(window).x << "," << sf::Mouse::getPosition(window).y << std::endl;
+            sf::Vector2i clicked_cell_pos = getClickedCell(window,sf::Mouse::getPosition(window));
+            cell_grid[clicked_cell_pos.x][clicked_cell_pos.y]->changeState();
         }
 
 
@@ -70,4 +72,28 @@ int main()
         window.display();
     }
     return EXIT_SUCCESS;
+}
+
+
+sf::Vector2i getClickedCell(sf::RenderWindow &window, sf::Vector2i mouse_pos)
+{
+    int column,row;
+    
+    for(int i = 0; i < number_of_cells.x;i++)
+    {
+        if(mouse_pos.x< cell_size.x*(i+1))
+        {
+            column = i;
+            break;
+        }
+    }
+    for(int i = 0; i < number_of_cells.y;i++)
+    {
+        if(mouse_pos.y < cell_size.y*(i+1))
+        {
+            row = i;
+            break;
+        }    
+    }
+    return sf::Vector2i(row,column);
 }

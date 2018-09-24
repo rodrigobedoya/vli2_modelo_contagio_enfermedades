@@ -9,15 +9,25 @@ Cell::Cell(sf::Vector2f cell_size):
 
 
 void Cell::changeState()
+{
+	if(healthy)
 	{
-		if(healthy)
-		{
-			this->setFillColor(sf::Color::Black);
-			healthy = false;
-		}
-		else
-		{
-			this->setFillColor(sf::Color::White);
-			healthy = true;
-		}
+		this->setFillColor(sf::Color::Black);
+		healthy = false;
 	}
+	else
+	{
+		this->setFillColor(sf::Color::White);
+		healthy = true;
+	}
+}
+
+void Cell::setState(bool state)
+{
+	healthy = state;
+}
+
+bool Cell::isHealthy()
+{
+	return healthy;
+}

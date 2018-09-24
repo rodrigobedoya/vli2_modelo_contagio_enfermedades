@@ -9,7 +9,8 @@ public:
 	Cell(sf::Vector2f cell_size);
 
 	void changeState();
-	void setState();
+	void setState(bool state);
+	bool isHealthy();
 
 private:
 	bool healthy;
