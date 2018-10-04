@@ -1,23 +1,82 @@
 #include "cell.h"
-
-Cell::Cell(sf::Vector2f cell_size):
-	sf::RectangleShape(cell_size),
-	healthy(true)
+#include <iostream>
+Cell::Cell():
+	state(0),
+	days_infected(0)
 {
+	infectChance = 60;
+	cureChance = 15;
+	resistance = 2;
+}
 
+void Cell::changeState()
+{
+	if(state==0)
+	{
+		state = 1;
+		std::cout << " is now infected";
+	}
+	else
+	{
+		state = 0;
+		std::cout << " is not infected anymore";
+	}
+	std::cout << std::endl;
+}
+
+void Cell::setState(int new_state)
+{
+	state = new_state;
+}
+
+void Cell::setDaysInfected(int days_infected)
+{
+	this->days_infected = days_infected; 
+}
+
+int Cell::getState()
+{
+	return state;
+}
+
+void Cell::draw()
+{
+	std::cout << state << " ";
+}
+
+int Cell::getDaysInfected()
+{
+	return days_infected;
 }
 
 
-void Cell::changeState()
+void Cell::evaluate(int &death_count, bool &change)
+{
+	if(state == 1)
 	{
-		if(healthy)
+		change = true;
+		if(days_infected > resistance)
 		{
-			this->setFillColor(sf::Color::Black);
-			healthy = false;
+			state=2;
+			death_count++;
 		}
 		else
-		{
-			this->setFillColor(sf::Color::White);
-			healthy = true;
-		}
+			days_infected+=1;
 	}
+	else if(state == 3)
+	{	
+		change = true;
+		state=1;
+	}
+	
+}
+
+int Cell::getCureChance()
+{
+	return cureChance;
+}
+
+int Cell::getInfectChance()
+{
+	return infectChance;
+}

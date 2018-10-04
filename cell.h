@@ -1,18 +1,26 @@
 #ifndef CELL_H
 #define CELL_H
 
-#include <SFML/Graphics.hpp>
-
-class Cell:public sf::RectangleShape
+class Cell
 {
 public:
-	Cell(sf::Vector2f cell_size);
-
+	Cell();
+	~Cell(){};
 	void changeState();
-	void setState();
-
+	void setState(int new_state);
+	int getState();
+	int getDaysInfected();
+	void setDaysInfected(int days_infected);
+	void draw();
+	void evaluate(int &death_count, bool &change);
+	int getCureChance();
+	int getInfectChance();
 private:
-	bool healthy;
+	int state; //0 = healthy, 1 = infected, 2 = dead, 3=temporal_infected
+	int days_infected;
+	int infectChance;
+	int cureChance;
+	int resistance;
 };
 
 #endif
