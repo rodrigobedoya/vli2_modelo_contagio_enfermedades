@@ -132,16 +132,19 @@ void CellGrid::run()
 			}
 		}
 	}
-
+/*
 	draw();
 	std::cout << "============================================================="  << std::endl;
-
+//*/
 	if(death_count == number_of_cellsX*number_of_cellsY || !change)
 		dead = true;
 }
 
-void CellGrid::summary()
+void CellGrid::summary(std::vector<int> &dead, std::vector<int> &alive)
 {
-	std::cout << "Alive: "<< number_of_cellsX*number_of_cellsY - death_count << std::endl;
-    std::cout << "Dead: "<< death_count << std::endl;
+	int alive_count = number_of_cellsX*number_of_cellsY - death_count;
+	/*std::cout << "Alive: "<< alive_count << std::endl;
+    std::cout << "Dead: "<< death_count << std::endl;*/
+    dead.push_back(death_count);
+    alive.push_back(alive_count);
 }
