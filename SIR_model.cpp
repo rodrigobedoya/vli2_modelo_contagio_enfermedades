@@ -1,9 +1,9 @@
 /*#####################################
-Soluci髇 Num閞ica de Modelo SIR 
+Soluci贸n Num茅rica de Modelo SIR 
 Autor: Nestor Gonzales
 Fecha: 28 Octubre 2018
 
-Descripci髇:
+Descripci贸n:
 
 dS/dt = - beta*S*I/N
 dI/dt = beta*S*I/N - gamma*I
@@ -15,8 +15,8 @@ S: Susceptibles
 I: Infectados
 R: Recuperados
 
-beta: tasa de transmisi髇
-gamma: tasa de remoci髇
+beta: tasa de transmisi贸n
+gamma: tasa de remoci贸n
 ##########################################
 */
 
@@ -51,18 +51,18 @@ SIR::SIR(double _beta, double _gamma, double _h,double _S0, double _I0, double _
 
 	beta 	= _beta;
 	gamma 	= _gamma;
-	h 		= _h;
+	h 	= _h;
 
-	S 		= _S0;
-	I 		= _I0;
-	R 		= _R0;
-	N 		= _S0+_I0+_R0;
+	S 	= _S0;
+	I 	= _I0;
+	R 	= _R0;
+	N 	= _S0+_I0+_R0;
 	tmax 	= _tmax;
 }
 
 SIR::~SIR(){}
 
-// M閠odo para las Ecuaciones diferenciales
+// M茅todo para las Ecuaciones diferenciales
 void SIR::EDO(double P[3])
 {
 
@@ -73,7 +73,7 @@ void SIR::EDO(double P[3])
   	Derivada[2] = gamma*P[1];                    		// dR/dt
 }
 
-//############### M閠odo de soluci髇 num閞ica RK4 #######################
+//############### M茅todo de soluci贸n num茅rica RK4 #######################
 void SIR::Runge_Kutta(){
 	int i;
 	double k1[3], k2[3], k3[3], k4[3];
@@ -126,7 +126,7 @@ void SIR::Runge_Kutta(){
 	
 }
 
-//############## M閠odo de resoluci髇 del modelo SIR ###########################
+//############## M茅todo de resoluci贸n del modelo SIR ###########################
 void SIR::Resolver(){
 		
 	t=0;
