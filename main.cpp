@@ -8,7 +8,6 @@ const int numberX = 30;
 const int numberY = 30;
 
 void sequential_run(int infect,CellGrid* start, int iterations,int rep, long int& flops,float &avg_alive, float &avg_dead, double &time);
-void parallel_run(int infect,CellGrid* start, int iterations,int rep,long int& flops);
 float avg(std::vector<float> sample);
 
 int main()
@@ -196,13 +195,11 @@ void sequential_run(int infect,CellGrid* start, int iterations,int rep,long int&
             Grid.run();
             flops += 1 + numberY*numberX*(3+11);
         }
-        //clocks += rep + rep*numberY*numberX*(3+11);
         Grid.run(); 
         flops += numberY*numberX*(3+11);
         Grid.summary(dead_history,alive_history);
         flops += 3;
     }
-    std::cout << std::endl;
     avg_alive = average(alive_history);
     avg_dead = average(dead_history);
     time = (double)(clock() - start_time)/CLOCKS_PER_SEC; 
