@@ -4,13 +4,13 @@
 #include <omp.h>
 #include "cell_grid.h"
 
-#define NUM_THREADS 4
+#define NUM_THREADS 16
 
 const int numberX = 30;
 const int numberY = 30;
 
-void sequential_run(int infect,CellGrid* start, int iterations,int rep);
-void parallel_run(int infect,CellGrid* start, int iterations,int rep);
+void sequential_run(int infect,CellGrid* start, int iterations,int rep, long int& flops);
+void parallel_run(int infect,CellGrid* start, int iterations,int rep,long int& flops);
 
 int main()
 {
@@ -44,11 +44,16 @@ int main()
     long int rep;
     std::cin >> rep;
 
-    std::cout << std::endl<< "Sequential:" << std::endl;
-    sequential_run(infect,&start,iterations,rep);
+    long int flops = 0;
 
+    std::cout << std::endl<< "Sequential:" << std::endl;
+    sequential_run(infect,&start,iterations,rep,flops);
+    std::cout << "Flops:" << flops << std::endl;
+
+    flops = 0;
     std::cout << std::endl<< "Parallel with "<< NUM_THREADS << " threads:" << std::endl;
-    parallel_run(infect,&start,iterations,rep);    
+    parallel_run(infect,&start,iterations,rep,flops);
+    std::cout << "Flops:" << flops << std::endl;        
     return 0;
 }
 
@@ -64,9 +69,8 @@ float average(std::vector<int> sample)
     return avg;
 }
 
-void sequential_run(int infect,CellGrid* start, int iterations,int rep)
+void sequential_run(int infect,CellGrid* start, int iterations,int rep,long int& flops)
 {
-
     clock_t start_time = clock();
     std::vector<int> dead_history; dead_history.reserve(iterations);
     std::vector<int> alive_history; alive_history.reserve(iterations);
@@ -75,6 +79,8 @@ void sequential_run(int infect,CellGrid* start, int iterations,int rep)
     {    
         CellGrid Grid(numberX,numberY);
         Grid.copy(start);
+        flops+= numberX*numberY*5;
+
         for(int j = 0; j < rep; j++)
         {
             if(Grid.isDead())
@@ -82,11 +88,16 @@ void sequential_run(int infect,CellGrid* start, int iterations,int rep)
                 break;
             }
             Grid.run();
+            flops += 1 + numberY*numberX*(3+11);
         }
+        //clocks += rep + rep*numberY*numberX*(3+11);
+
         /*std::cout << "=====================================" << std::endl;
         std::cout << "ITERACION "<< i+1 << std::endl;*/
         Grid.run(); 
+        flops += numberY*numberX*(3+11);
         Grid.summary(dead_history,alive_history);
+        flops += 3;
     }
     std::cout << std::endl;
     std::cout << "Average alive: " << average(alive_history) << std::endl;
@@ -94,7 +105,7 @@ void sequential_run(int infect,CellGrid* start, int iterations,int rep)
     std::cout << "Time taken: " << (double)(clock() - start_time)/CLOCKS_PER_SEC << std::endl;
 }
 
-void parallel_run(int infect,CellGrid* start, int iterations,int rep)
+void parallel_run(int infect,CellGrid* start, int iterations,int rep,long int& flops)
 {
     double start_time = omp_get_wtime();
     std::vector<int> dead_history; dead_history.reserve(iterations);
@@ -108,6 +119,7 @@ void parallel_run(int infect,CellGrid* start, int iterations,int rep)
         {    
             CellGrid Grid(numberX,numberY);
             Grid.copy(start);
+            flops+= numberX*numberY*5;
             for(int j = 0; j < rep; j++)
             {
                 if(Grid.isDead())
@@ -115,11 +127,15 @@ void parallel_run(int infect,CellGrid* start, int iterations,int rep)
                     break;
                 }
                 Grid.run();
+                flops += 1 + numberY*numberX*(3+11);
             }
+            //clocks += rep + rep*numberY*numberX*(3+11);
             /*std::cout << "=====================================" << std::endl;
             std::cout << "ITERACION "<< i+1 << std::endl;*/
             Grid.run(); 
+            flops += numberY*numberX*(3+11);
             Grid.summary(dead_history,alive_history);
+            flops += 3;
         }
     }
     std::cout << std::endl;
